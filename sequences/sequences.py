@@ -6,13 +6,116 @@ import math
 import functools
 
 def main():
-    length = 1000
+    length = 3000
+    shouldPrint = True
 
     #sequence = reversedPrimes(length)
-    sequence = [flyStraight(i) for i in range(length)]
+    #sequence = [flyStraight(i) for i in range(length)]
+    #sequence = [balancedTernary(i) for i in range(length)]
+    #sequence = [wisteria(i) for i in range(1, length)]
+    sequence = forestFire(length)
 
-    for val in sequence:
-        print(val)
+    if shouldPrint:
+        for val in sequence:
+            print(val)
+
+def forestFire(length):
+    #a[i+j] - a[i] != a[i+2j] - a[i+j]
+
+    a = []
+
+    for i in range(length):
+
+        for smallest in infinity():
+            if works(a, smallest):
+                a.append(smallest)
+                break
+
+    return a
+
+def works(a, value):
+
+    ln = len(a)
+
+    if ln < 2:
+        return True
+
+    index = ln
+    step = 1
+
+    while True:
+
+        if step * 2 > ln:
+            return True
+
+        if value - a[index - step] == a[index - step] - a[index - 2 * step]:
+            return False
+
+        step += 1
+
+    return True
+ 
+def infinity(start=1, increment=1):
+    val = start
+    while True:
+        yield val
+        val += increment
+
+def wisteria(num):
+    numString = str(num)
+
+    product = 1
+    for digit in numString:
+        value = int(digit)
+
+        if value != 0:
+            product *= value
+
+    return num - product
+
+def balancedTernary(num):
+    ternary = baseConvert(num, 3)
+
+    total = 0
+    base = 1
+
+    for digit in ternary[::-1]:
+        
+        if digit == "0":
+            pass
+        if digit == "1":
+            total += base 
+        if digit == "2":
+            total -= base
+
+        base *= 3
+
+    return total
+
+def baseConvert(n, base):
+    """convert positive decimal integer n to equivalent in another base (2-36)"""
+
+    digits = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+    try:
+        n = int(n)
+        base = int(base)
+    except:
+        return ""
+
+    if n < 0 or base < 2 or base > 36:
+        return ""
+
+    s = ""
+
+    while 1:
+        r = n % base
+        s = digits[r] + s
+        n = n // base
+        if n == 0:
+            break
+
+    return s
 
 def primes(num):
     if 2 <= num:
