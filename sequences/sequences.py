@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Implementation of sequences from this Numberphile series: https://www.youtube.com/playlist?list=PLt5AfwLFPxWLkoPqhxvuA8183hh1rBnGM
+"""
 
 import random
 import sys
@@ -6,18 +9,59 @@ import math
 import functools
 
 def main():
-    length = 3000
+    length = 1000
     shouldPrint = True
 
-    #sequence = reversedPrimes(length)
     #sequence = [flyStraight(i) for i in range(length)]
+    #sequence = reversedPrimes(length)
     #sequence = [balancedTernary(i) for i in range(length)]
     #sequence = [wisteria(i) for i in range(1, length)]
-    sequence = forestFire(length)
+    #sequence = forestFire(length)
+    #sequence = [stern(i) for i in range(length)]
+    #sequence = [hofstadters(i) for i in range(length)]
+    sequence = [sigrist(i) for i in range(1, length)]
 
     if shouldPrint:
         for val in sequence:
             print(val)
+
+@functools.lru_cache(maxsize=100000, typed=False)
+def sigrist(n):
+    
+    if n <= 1:
+        return 0
+
+    unavailable = []
+
+    for i in range(n):
+        if i & n:
+            unavailable.append(sigrist(i))
+
+    for i in infinity(start=0):
+        if i not in unavailable:
+            return i
+
+
+@functools.lru_cache(maxsize=100000, typed=False)
+def hofstadters(n):
+    #a(n) = a(n - a(n-1)) + a(n - a(n-2))
+
+    if n <= 1:
+        return 1
+
+    return hofstadters(n - hofstadters(n-1)) + hofstadters(n - hofstadters(n-2))
+
+
+@functools.lru_cache(maxsize=10000, typed=False)
+def stern(n):
+    #a(2*n) = a(n), a(2*n+1) = a(n) + a(n+1)
+
+    if n <= 1:
+        return n
+
+    if n % 2 == 0:
+        return stern(n//2)
+    return stern((n-1)//2) + stern((n+1)//2)
 
 def forestFire(length):
     #a[i+j] - a[i] != a[i+2j] - a[i+j]
