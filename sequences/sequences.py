@@ -19,7 +19,7 @@ def main():
     #sequence = forestFire(length)
     #sequence = [stern(i) for i in range(length)]
     #sequence = [hofstadters(i) for i in range(length)]
-    sequence = [sigrist(i) for i in range(1, length)]
+    #sequence = [sigrist(i) for i in range(1, length)]
 
     if shouldPrint:
         for val in sequence:
