@@ -10,7 +10,7 @@
 ![](./reversed_primes.png)
 
 ### Fly Straight 
-![](./fly_straight.png)
+![](./fly_straight_sequence.png)
 
 ### Forest Fire
 ![](./forest_fire.png)
