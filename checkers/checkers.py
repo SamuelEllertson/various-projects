@@ -94,7 +94,6 @@ class Checkers:
 
     def doTurn(self):
         
-
         while True:
             self.clearScreen()
             print(f"It is {self.player.name}'s turn\n")
@@ -168,8 +167,7 @@ class Checkers:
         if abs(dx) == 2:
             
             jumpedPos = oldPos[0] + dy//2, oldPos[1] + dx//2
-            print(dx, dy)
-            print(jumpedPos)
+
             if self.board[jumpedPos] is None or self.board[jumpedPos].color == self.player:
                 raise GameException("Must only jump over enemy pieces")
 
@@ -203,8 +201,6 @@ class Checkers:
 
     def printWinner(self):
         print(f"{self.player.name} has Won")
-
-
 
 def main():
     game = Checkers()
