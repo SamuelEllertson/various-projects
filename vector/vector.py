@@ -23,6 +23,8 @@ def make_iterable(obj):
 
 class Vector(MutableSequence):
 
+    __slots__ = ["values", "cache"]
+
     swizzles = {
         "x": 0,
         "y": 1,
