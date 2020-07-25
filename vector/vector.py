@@ -6,6 +6,8 @@ from reprlib import recursive_repr
 import math
 from itertools import repeat
 
+from Cache import Cached
+
 def is_iterable(obj):
     try:
         iter(obj)
@@ -21,9 +23,9 @@ def make_iterable(obj):
         return obj
     return repeat(obj)
 
-class Vector(MutableSequence):
+class Vector(Cached, MutableSequence):
 
-    __slots__ = ["values", "cache"]
+    __slots__ = ["values"]
 
     swizzles = {
         "x": 0,
@@ -38,7 +40,6 @@ class Vector(MutableSequence):
 
     def __init__(self, *args):
         self.values = list(args)
-        self.cache = {}
 
     @classmethod
     def from_iterable(cls, iterable):
@@ -49,18 +50,11 @@ class Vector(MutableSequence):
         >>> Vector.from_iterable([1,1,2,2])
         Vector(1, 1, 2, 2)
         """
-
         return cls(*iterable)
 
-    @property
+    @Cached.property
     def length(self):
-        key = "length"
-        if key in self.cache:
-            return self.cache[key]
-
-        self.cache[key] = math.hypot(*self)
-    
-        return self.cache[key]
+        return math.hypot(*self)
 
     def dot(self, other):
         other = make_iterable(other)
@@ -74,8 +68,8 @@ class Vector(MutableSequence):
     def get_normalized(self):
         return self / self.length
 
+    @Cached.invalidate
     def insert(self, *args, **kwargs):
-        self.cache.clear()
         self.values.insert(*args, **kwargs)
 
     def apply_operator(self, other, opr, right=False, inplace=False):
@@ -90,8 +84,8 @@ class Vector(MutableSequence):
         new_values = (opr(x,y) for x,y in opr_params)
 
         if inplace:
+            self.clear_cache()
             self.values = list(new_values)
-            self.cache.clear()
             return self
         else:
             return self.from_iterable(new_values)
@@ -184,6 +178,7 @@ class Vector(MutableSequence):
 
         return self.from_iterable(self.values[index])
 
+    @Cached.invalidate
     def __setitem__(self, index, value):
         """Sets elements or slices of a vector
 
@@ -198,10 +193,9 @@ class Vector(MutableSequence):
         >>> vec
         Vector(1, 2, 3, 1, 1, 1, 3)
         """
-        self.cache.clear()
-
         self.values[index] = value
 
+    @Cached.invalidate
     def __delitem__(self, index):
         """deletes elements or slices of a vector
 
@@ -213,8 +207,6 @@ class Vector(MutableSequence):
         >>> vec
         Vector(1, 5)
         """
-        self.cache.clear()
-
         del self.values[index]
 
     def __len__(self):
